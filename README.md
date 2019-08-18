@@ -113,4 +113,6 @@ classifier = nn.Sequential(OrderedDict([
 - Third step is to evaluvate the result. We splitted the dataset into training, test and validation parts. The training examples take 80% of the whole datasets and the rest are for test and validation. By running the evaluvation on the last layer of the network, we obtain the training and test error.
 - Finally fine tuning the network framework. We need to give the model initial parameters, and setup optimization process. Example - Dropouts are used to prevent overfitting. Adam was used as an optimizer and every optimizer have different parameters, such as learning rate and learning rate decay. To achieve the minimum loss, we have spent several days to find a sweet spot to tweak them.
 Here is the snippet showing the specific betas.
-```optimizer = optim.Adam(model.classifier.parameters(), lr=0.001, betas=[0.9, 0.999])```
+
+```
+optimizer = optim.Adam(model.classifier.parameters(), lr=0.001, betas=[0.9, 0.999])```

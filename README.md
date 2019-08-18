@@ -21,6 +21,7 @@ Food applications based on image food classification opened a new realm of chall
 | Inception V3  	|  88.28  	|   96.88 	|   ECCVW2016 	|
 |   ResNet-200	|   88.38 	|   	97.85 |    CVPR2016	|
 |   WRN 	|   88.72 	|   	 97.92|   BMVC2016	|
+|ResNext-101| 85.4|96.5| **Proposed**
 |   WISeR 	|   90.27 	|   98.71	|   UNIUD2016 	|
 |   **DenseNet - 161**	|  **93.26** 	|   **99.01**	|  **Proposed** 	|
 
@@ -84,3 +85,32 @@ Transforms for both the training and test data is defined as follows:
                                                            [0.229, 0.224, 0.225])])
 
 An illustration has been attached to depict the outcome of the transforms.
+
+***
+ **Methodology**
+
+We utilized a system having the following configuration to run the whole program:
+|Vendor | Asus (RoG) |
+|--|--|
+| Processor  | Core I7  |
+| Ram  | 8 Gb  |
+| GPU | Nvidia GTX - 1050ti  |
+
+System almost spent 4-5 days to process the complicated network structure. The framework for deep learning is the latest edition of PyTorch. We applied the transfer learning method to our model which is by using the pretrained model as a <a href="https://www.kaggle.com/pytorch/densenet121/kernels">checkpoint</a> and continue to train the neural network. Reason is pretty simple, ImageNet has very large amount of dataset and is trained on precised with well equipped systems.
+
+ - At first, use a pretrained model of DenseNet-161. Load a checkpoint from the pretrained model, which is a file that stores all the tensors after months of training for the ImageNet dataset.
+ - Second step is to concentrate on the last layer of the network and recognize classes of food images. Remember to shift the classifier from ImageNet to Food-101, 101 means having 101 classes and ImageNet have 1001.
+ - Here is a sample code snippet of classifier. You can observe the number of classes have modified to fit with the food dataset. We finally manipulate the softmax. Then we retrain the last layer to get a model based on the pre-trained model.
+
+```
+classifier = nn.Sequential(OrderedDict([
+                          ('fc1', nn.Linear(1024, 500)),
+                          ('relu', nn.ReLU()),
+                          ('fc2', nn.Linear(500, 101)),
+                          ('output', nn.LogSoftmax(dim=1))
+                          ]))
+```
+- Third step is to evaluvate the result. We splitted the dataset into training, test and validation parts. The training examples take 80% of the whole datasets and the rest are for test and validation. By running the evaluvation on the last layer of the network, we obtain the training and test error.
+- Finally fine tuning the network framework. We need to give the model initial parameters, and setup optimization process. Example - Dropouts are used to prevent overfitting. Adam was used as an optimizer and every optimizer have different parameters, such as learning rate and learning rate decay. To achieve the minimum loss, we have spent several days to find a sweet spot to tweak them.
+Here is the snippet showing the specific betas.
+```optimizer = optim.Adam(model.classifier.parameters(), lr=0.001, betas=[0.9, 0.999])```

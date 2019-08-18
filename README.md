@@ -90,6 +90,7 @@ An illustration has been attached to depict the outcome of the transforms.
  **Methodology**
 
 We utilized a system having the following configuration to run the whole program:
+
 |Vendor | Asus (RoG) |
 |--|--|
 | Processor  | Core I7  |
